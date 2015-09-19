@@ -174,7 +174,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Data Munging and Analyzing Barcelona OSM Data With MongoDB</p>
+<p><b>Data Munging and Analyzing Barcelona OSM Data With MongoDB</b></p>
 <p>The XML data for the city boundary of Barcelona was downloaded from OSM to clean and transform into a json encodable structure to allow loading into MongoDB, providing storage and artbitrary querying to enable further data analysis of the Barcelona OSM dataset. I chose the Barcelona dataset because I just recently spent a few weeks there and noticed some pretty cool urban planning features of the city (ie. Avinguda Diagonal) that could be interesting to explore further.</p>
 <p><img src="http://static1.squarespace.com/static/52b3aae6e4b00492bb71aa3d/t/54776cbde4b019f8929d0684/1414769949925/?format=1500w" style="width: 650px;"></p>
 <p>From <a href="http://www.dailyoverview.com/six/">dailyoverview.com</a></p>
@@ -187,7 +187,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Problems Encountered in the Dataset<br>
+<p><b>Problems Encountered in the Dataset</b><br>
 After reviewing samples of the Barcelona OSM dataset, a few data quality issues were observed, including:</p>
 <ol>
 <li>Inconsistent house number - single numbers (ie. "120"), ranges (ie. "119-121") or lists (ie. "119,121")  </li>
@@ -202,7 +202,7 @@ After reviewing samples of the Barcelona OSM dataset, a few data quality issues 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Standardizing house number data<br>
+<p><b>Standardizing House Number Data</b><br>
 As part of auditing the OSM dataset for Barcelona, it was observed that the way houses are numbered are inconsistent. House numbers were standardized into lists of the numbers if delimited by a "-" or ",", otherwise tranformed into a single item list of the "addr:housenumber" attribute. Once standardized, queries were run to see the top 5 most common house numbers in Barcelona.</p>
 
 </div>
@@ -269,7 +269,7 @@ house_num = 13 count = 195
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Further Data Analysis</p>
+<p><b>Further Data Analysis</b></p>
 
 </div>
 </div>
@@ -323,8 +323,8 @@ most common non-Barcelona city = Santa Coloma de Cervelló
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Additional Ideas<br>
-Continuing from the above analysis of most common house numbers, it presents the question of does the pattern of house rank being similiar to house number continue throughout the dataset, or does a seperation begin at later values? We could explore the dataset further to answer this question by producing a scatterplot of house number versus rank and visualize if any seperation in the linear trend appears. Defining the exact point of seperation (if one exists) could prove challenging, as we have seen that the house rank to number do not exactly line up 1 to 1 (ie. Rank 4 is house number 5, not 4). We would have to define a "seperation" criteria (ie. rank - house number &gt; 10) or do some statistical analysis to test if a change in the pattern has infact occured.</p>
+<p><b>Additional Ideas</b><br>
+There is a large number of datapoints with missing house number data within the Barcelona dataset. In order correct for this missing data, it may be possible to use the assumption that house numbering follows a fairly linear pattern as you traverse each way, so using a linear interporated imputation for missing values may be a valid methodology. To implement this, we would need to iterate over the nodes found on each way (from the ways node_refs list) and collect each nodes "addr:housenumber" attribute. If the "addr:housenumber" attribute does not exist, we would lookup the 2 closest neighbors that do have "addr:housenumber" data using the lat/lon coordinates and then linearly interpotale the nearest whole number between those "addr:housenumber" data to be used as the nodes "addr:housenumber" data. This could prove to be a challenging methodology to implement, and does not gaurentee accuracy. It would be important to setup visualizations of the above approach to ensure it works as expected.</p>
 
 </div>
 </div>
@@ -334,8 +334,8 @@ Continuing from the above analysis of most common house numbers, it presents the
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Conclusions<br>
-Although there is missing data in the Barcelona OSM dataset, it is the data inconsistencies that seem most prevelent and can prove to be the most difficult to deal with. Simply checking if the data exists does not suffice for data inconsistencies, and ensuring that the data is in the expected form (ie. a single or list of house numbers) needs to be done before proper analysis can be performed, as was exemplified in the above report.</p>
+<p><b>Conclusions</b><br>
+The missing and inconsistent data in the Barcelona OSM dataset seems to be prevelent and can prove to be the difficult to deal with. Simply checking if the data exists does not suffice for data inconsistencies, and ensuring that the data is in the expected form (ie. a single or list of house numbers) and actually exists, needs to be done before proper analysis can be performed, as was exemplified in the above report.</p>
 
 </div>
 </div>
