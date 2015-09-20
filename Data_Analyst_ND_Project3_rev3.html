@@ -210,12 +210,12 @@ As part of auditing the OSM dataset for Barcelona, it was observed that the way 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[92]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;C:/Users/Cole/Desktop/Udacity/Data Analyst Nano Degree/Project 3&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;C:/Users/Cole/Desktop/Udacity/Data Analyst Nano Degree/Project 3/Udacity-DSNDP3&quot;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">OSM_data_wrangling</span> <span class="kn">as</span> <span class="nn">OSMDW</span>
 <span class="n">osm</span> <span class="o">=</span><span class="n">OSMDW</span><span class="o">.</span><span class="n">connect_OSM_collection</span><span class="p">()</span>
 <span class="n">house_nums</span> <span class="o">=</span> <span class="n">osm</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([{</span><span class="s">&quot;$match&quot;</span><span class="p">:{</span><span class="s">&quot;addr:housenumber&quot;</span><span class="p">:{</span><span class="s">&quot;$exists&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},{</span><span class="s">&quot;$unwind&quot;</span><span class="p">:</span><span class="s">&quot;$addr:housenumber&quot;</span><span class="p">},</span>
@@ -269,6 +269,44 @@ house_num = 13 count = 195
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><b>Standardizing Source Date Data</b><br>
+The source dates for ways and nodes come in various combinations of Years, Months and Days (ie. 2009, 2009-07, 2009-07-01) This format needs to be standardized so we can perform time series analysis on standardized data. A script was written to transform all dates into the format YYYYMMDD. The default value for any source date missing the month or day is Month = 01 and day = 01.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="n">osm</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s">&quot;source:date&quot;</span><span class="p">:{</span><span class="s">&quot;$exists&quot;</span><span class="p">:</span><span class="s">&quot;True&quot;</span><span class="p">}},{</span><span class="s">&quot;source:date&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">})</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{u&apos;source:date&apos;: u&apos;20090101&apos;}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p><b>Further Data Analysis</b></p>
 
 </div>
@@ -287,10 +325,14 @@ house_num = 13 count = 195
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[135]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="s">&quot;dataset record count = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">osm</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="k">print</span> <span class="s">&quot;unique users = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">osm</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s">&quot;created.user&quot;</span><span class="p">)))</span>
+<span class="k">print</span> <span class="s">&quot;node count = &quot;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">osm</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;node&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="k">print</span> <span class="s">&quot;way count = &quot;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">osm</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;way&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="k">print</span> <span class="s">&quot;number of apartments = &quot;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">osm</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">&quot;building&quot;</span><span class="p">:</span><span class="s">&quot;apartments&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
 <span class="k">print</span> <span class="s">&quot;dataset cities=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">osm</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s">&quot;addr:city&quot;</span><span class="p">)))</span>
 <span class="k">print</span> <span class="s">&quot;most common non-Barcelona city = &quot;</span> <span class="o">+</span> <span class="p">(</span><span class="n">osm</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([{</span><span class="s">&quot;$match&quot;</span><span class="p">:{</span><span class="s">&quot;addr:city&quot;</span><span class="p">:{</span><span class="s">&quot;$exists&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;$nin&quot;</span><span class="p">:[</span><span class="s">&quot;Barcelona&quot;</span><span class="p">]}}},</span>
                      <span class="p">{</span><span class="s">&quot;$group&quot;</span><span class="p">:{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;$addr:city&quot;</span><span class="p">,</span> <span class="s">&quot;count&quot;</span><span class="p">:{</span><span class="s">&quot;$sum&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span> <span class="p">{</span><span class="s">&quot;$sort&quot;</span><span class="p">:{</span><span class="s">&quot;count&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
@@ -308,6 +350,10 @@ house_num = 13 count = 195
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>dataset record count = 961553
+unique users = 1684
+node count = 851717
+way count = 109539
+number of apartments = 4038
 dataset cities=72
 most common non-Barcelona city = Santa Coloma de Cervelló
 </pre>

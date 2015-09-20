@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import heapq
 from pymongo import MongoClient
 
+OSM_FILE = "C:/Users/Cole/Desktop/Udacity/Data Analyst Nano Degree/Project 3/barcelona_spain.osm"
+SAMPLE_FILE = "C:/Users/Cole/Desktop/Udacity/Data Analyst Nano Degree/Project 3/sample.osm"
 def get_element(osm_file, tags=('node', 'way', 'relation')): 
     """Yield element if it is the right type of tag
 
@@ -73,17 +75,29 @@ def shape_element(element): #This function extracts the top level and key/value 
                             node["addr:housenumber"] = [house_num]
                     except:
                         node["addr:housenumber"] = [house_num]
+                elif child.attrib['k'] == "source:date":
+                	source_date = child.attrib['v']
+                	if "-" in source_date:
+                		date_components = source_date.split("-")
+                		if len(date_components) == 3:
+                			node["source:date"] = source_date
+                		elif len(date_components) ==2:
+                			node["source:date"] = source_date + "01"
+                	else:
+                		node["source:date"] = source_date + "0101"
+                	node["source:date"].replace("-","")
                 else:
                     node[child.attrib['k']] = child.attrib['v']
        return node
     return None
 
 def OSM_file_mongo_update(file_in): #Insert each shaped element into MongoDB OSM collection
-    for _, element in ET.iterparse(file_in):
-        el = shape_element(element)
-        if el:
-            osm.update(el,el,{"upsert":"True"})
-    return osm.find_one()
+	osm =connect_OSM_collection()
+	for _, element in ET.iterparse(file_in):
+	    el = shape_element(element)
+	    if el:
+	        osm.insert(el)
+	return osm.find_one()
 
 def connect_OSM_collection():
     client = MongoClient('mongodb://localhost:27017/')
